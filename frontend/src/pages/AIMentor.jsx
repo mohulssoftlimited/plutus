@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { FcSearch } from "react-icons/fc";
 
 const AIMentor = () => {
   const { user } = useAuth();
@@ -130,65 +131,69 @@ const AIMentor = () => {
     currentAIMessageRef.current = null; // ✅ Reset AI tracking before receiving new AI response
     socket.current.send(JSON.stringify(message));
   };
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white">
-      {/* ✅ Header */}
-      <header className="p-4 bg-gray-800 shadow-md text-center text-xl font-semibold">
-        AI Mentor Chat
-      </header>
-
-      {/* ✅ Chat Container */}
-      <div
-        ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3"
-      >
-        {messages.map((msg, index) => (
-          <div
-            key={msg.id || index}
-            className={`flex ${
-              msg.sender === "User" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-xs md:max-w-sm p-3 rounded-lg 
-                            ${
-                              msg.sender === "User"
-                                ? "bg-blue-600"
-                                : "bg-gray-700"
-                            } text-white`}
-            >
-              {msg.text}
-            </div>
-          </div>
-        ))}
-
-        {/* ✅ AI is Typing Indicator */}
-        {loading && currentAIMessageRef.current === null && (
-          <div className="flex justify-start">
-            <div className="p-3 bg-gray-700 rounded-lg animate-pulse">
-              Typing...
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ✅ Input Box */}
-      <div className="p-4 bg-gray-800 flex items-center">
-        <input
-          type="text"
-          className="flex-1 px-4 py-2 bg-gray-700 rounded-lg text-white outline-none"
-          placeholder="Ask something..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button
-          onClick={sendMessage}
-          className="ml-3 bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+    <div className="bg-gray-900 text-white md:min-h-[93vh]">
+      <div className="max-w-7xl mx-auto rounded-lg">
+        <header className="p-4 text-center text-xl font-semibold ">
+          AI Mentor Chat
+        </header>
+        <div
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[60vh]"
         >
-          Send
-        </button>
+          {messages.map((msg, index) => (
+            <div
+              key={msg.id || index}
+              className={`flex ${
+                msg.sender === "User" ? "justify-end" : "justify-start"
+              }`}
+            >
+              <div
+                className={`max-w-sm md:max-w-md px-4 py-3 rounded-2xl shadow-md text-sm 
+                          ${
+                            msg.sender === "User"
+                              ? "bg-blue-500 text-white rounded-br-none"
+                              : "bg-gray-800 text-gray-200 rounded-bl-none"
+                          }`}
+              >
+                {msg.text}
+              </div>
+            </div>
+          ))}
+
+          {/* ✅ AI Typing Indicator */}
+          {loading && !currentAIMessageRef.current && (
+            <div className="flex justify-start">
+              <div className="px-4 py-3 bg-gray-800 text-gray-400 rounded-2xl animate-pulse text-sm">
+                AI is typing...
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="mt-4 p-4 flex items-center gap-3">
+          <textarea
+            rows={6}
+            type="text"
+            aria-label="Chat input"
+            className="flex-1 px-4 py-2 text-xs border rounded border-[#51A2FF]"
+            placeholder="Ask something..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button
+            onClick={sendMessage}
+            className=" bg-[#51A2FF] px-4 p-2 flex gap-4 items-center rounded "
+          >
+            Send
+          </button>
+        </div>
       </div>
     </div>
   );

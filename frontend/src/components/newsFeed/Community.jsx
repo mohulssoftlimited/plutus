@@ -120,7 +120,7 @@ const Home = () => {
                     <p className="text-sm">{community.description}</p>
                   </div>
                   <button
-                    className="text-xs border border-[#51A2FF] px-4 py-1 rounded-md"
+                    className="text-xs border border-[#51A2FF] px-4 py-1 rounded-md cursor-pointer"
                     onClick={() => {
                       setSelectedCommunity(community);
                       setShowConfirmModal(true);
