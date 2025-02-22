@@ -64,9 +64,6 @@ async def websocket_ai_mentor(websocket: WebSocket):
 # Setup middleware
 setup_middleware(app)
 
-
-
-
 # Register routes
 app.include_router(api_router)
 
